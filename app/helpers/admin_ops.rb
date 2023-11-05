@@ -1,0 +1,14 @@
+# frozen_string_literal: true
+
+module AdminOps
+  CREATE_ARTICLE = 1
+  EDIT_ARTICLE = 2
+  DELETE_ARTICLE = 3
+  CREATE_CATEGORY = 4
+  EDIT_CATEGORY = 5
+  DELETE_CATEGORY = 6
+  BAN_USER = 7
+  UNBAN_USER = 8
+  PUBLISH_ARTICLE = 9
+  EDIT_THEN_PUBLISH_ARTICLE = 10
+end

@@ -1,0 +1,11 @@
+<% @heading = 'Totally non-credible news worldwide' %>
+<ul class="list-group">
+  <% @articles.each do |article| %>
+    <li class="list-group-item">
+      <article>
+        <h5><%= article.title %></h5><sub>By <%= get_name user: article.author %>&nbsp;<%= article.categories.present? ? "in #{article.categories.collect { |cat| cat.name }.join(', ')}" : '' %></sub>
+        <p><%= article.content.truncate_words 30 %></p>
+      </article>
+    </li>
+  <% end %>
+</ul>

@@ -1,0 +1,66 @@
+<% if flash[:success] %>
+  <div class="alert alert-success alert-dismissible" role="alert">
+    <button class="btn-close" type="button" aria-label="Close" data-bs-dismiss="alert"></button>
+    <span>
+      <% case flash[:success]
+           # It's apparently a syntax error if you separate case and first when block
+         when FlashCodes::LOGIN_YAY %>
+        <strong>You're in!</strong> You should be back to wherever you came from. If you are still here after <strong id="redirect-time"><%= @redirect_time or 5 %></strong> seconds,&nbsp;<%= link_to 'click me!', @redirect_path %>
+      <% when FlashCodes::REGISTER_YAY %>
+        <strong>You're in!</strong> You should be back to wherever you came from. If you are still here after <strong id="redirect-time"><%= @redirect_time or 5 %></strong> seconds,&nbsp;<%= link_to 'click me!', @redirect_path %>
+      <% when FlashCodes::NEW_CATEGORY_YAY %>
+        <strong>Category made!</strong> New category '<%= @category.name or 'where category name' %>' has been added.
+      <% when FlashCodes::RENAME_CATEGORY_YAY %>
+        <strong>Category renamed!</strong> New category '<%= @category.name or 'where category name' %>' has been renamed.
+      <% when FlashCodes::DELETE_CATEGORY_YAY %>
+        <strong>Category renamed!</strong> New category '<%= @category.name or 'where category name' %>' has been removed.
+      <% when FlashCodes::NEW_ARTICLE_YAY %>
+        <strong>Article made!</strong> New article '<%= @article.title or 'where article name' %>' has been <%= @article.published? ? 'published and now visible to the public.' : 'created.' %>
+        <% when FlashCodes::EDIT_ARTICLE_YAY %>
+        <strong>Article made!</strong> New article '<%= @article.title or 'where article name' %>' has been <%= @article.published? ? 'edited and now visible to the public.' : 'edited.' %>
+        <% when FlashCodes::DELETE_ARTICLE_YAY %>
+        <strong>Article deleted!</strong> New article '<%= @article.title or 'where article name' %>' has been successfully deleted.
+      <% else %>
+        <strong>Huh?</strong> I got a success alert but no result? Hmm...
+      <% end %>
+    </span>
+  </div>
+<% elsif flash[:fail] %>
+  <div class="alert alert-danger alert-dismissible" role="alert">
+    <button class="btn-close" type="button" aria-label="Close" data-bs-dismiss="alert"></button>
+    <span>
+      <% case flash[:fail]
+           # It's apparently a syntax error if you separate case and first when block
+         when FlashCodes::WRONG_PASS %>
+          <strong>Wrong password!</strong> You're starting to forget things. Hmm...
+        <% when FlashCodes::INVALID_INPUT %>
+          <strong>Invalid input!</strong> Your form is invalid for some reason.
+        <% when FlashCodes::NO_USER %>
+          <strong>User not found!</strong> How about you register first?
+        <% when FlashCodes::USER_TAKEN %>
+          <strong>Username taken!</strong> Better luck next time, slowpoke.
+        <% when FlashCodes::SHIT_PASS %>
+          <strong>Bruh.</strong> Can you at least pretend to care about your password security?
+        <% when FlashCodes::NO_ADMIN_OPS %>
+          <strong>Bruh.</strong> Did you just POST without an admin form?
+        <% when FlashCodes::INTERNAL_SERVER_ERROR %>
+          <strong>Internal server error!</strong> Whoever made this website is an idiot!
+        <% else %>
+          <strong>Huh?</strong> I got a fail alert but no result? Hmm...
+      <% end %>
+    </span>
+  </div>
+<% elsif flash[:alert] %>
+  <div class="alert alert-warning alert-dismissible" role="alert">
+    <button class="btn-close" type="button" aria-label="Close" data-bs-dismiss="alert"></button>
+    <span>
+      <% case flash[:alert]
+           # It's apparently a syntax error if you separate case and first when block
+         when FlashCodes::ALREADY_LOGGED_IN %>
+          <strong>You're already logged in!</strong> You should be back to wherever you came from. If you are still here after <strong id="redirect-time"><%= @redirect_time %></strong> seconds,&nbsp;<%= link_to 'click me!', @redirect_path %>
+        <% else %>
+          <strong>Huh?</strong> I got an alert but no result? Hmm...
+      <% end %>
+    </span>
+  </div>
+<% end %>

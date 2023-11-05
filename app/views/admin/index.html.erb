@@ -1,0 +1,234 @@
+<% @heading = 'Admin Panel' %>
+<div class="card-body">
+  <%= render partial: 'layouts/application/alert' %>
+  <div>
+    <ul class="nav nav-tabs nav-justified" role="tablist" id="admin_tabs">
+      <li class="nav-item" role="presentation"><a class="nav-link active" role="tab" data-bs-toggle="tab" href="#articles">Articles</a></li>
+      <li class="nav-item" role="presentation"><a class="nav-link" role="tab" data-bs-toggle="tab" href="#categories">Categories</a></li>
+      <li class="nav-item" role="presentation"><a class="nav-link disabled" role="tab" data-bs-toggle="tab" href="#banlist">Banlist</a></li>
+      <li class="nav-item" role="presentation"><a class="nav-link disabled" role="tab" data-bs-toggle="tab" href="#admins">Admins</a></li>
+    </ul>
+    <div class="tab-content">
+      <div class="tab-pane active" role="tabpanel" id="articles">
+        <%= render_modal name: 'addArticle', title: 'Create a new article', large: true %>
+        <div>
+          <div class="row">
+            <div class="col">
+              <% if @articles_all.present? %>
+                <h5 class="float-start"><%= @articles_all.size %> Total articles (<%= @articles_hidden.size %> hidden)</h5>
+              <% else %>
+                <h5 class="float-start">No articles yet</h5>
+              <% end %>
+            </div>
+            <div class="col-auto d-xxl-flex flex-shrink-1 order-last">
+              <ul class="nav nav-pills nav-justified flex-sm-row flex-column" role="tablist">
+                <li class="nav-item" role="presentation"><a class="nav-link active" href="#all-articles" role="tab" data-bs-toggle="tab">All</a></li>
+                <li class="nav-item" role="presentation"><a class="nav-link" href="#published-articles" role="tab" data-bs-toggle="tab">Published</a></li>
+                <li class="nav-item" role="presentation"><a class="nav-link" href="#hidden-articles" role="tab" data-bs-toggle="tab">Hidden</a></li>
+                <li class="nav-item" role="presentation"><button class="btn btn-success" data-bs-toggle="modal" data-bss-tooltip="" type="button" data-bs-target="#addArticleModal">Create</button></li>
+              </ul>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <div class="tab-content">
+                <!-- Might as well do it now here -->
+                <% @articles_all.each do |article| %>
+                  <%= render_modal name: "editArticle", title: "Edit article: #{article.title}", model: article %>
+                <% end %>
+                <div id="all-articles" class="tab-pane active" role="tabpanel">
+                  <% if @articles_all.present? %>
+                    <ul class="list-group">
+                      <% @articles_all.each do |article| %>
+                        <li class="list-group-item">
+                          <div class="vstack">
+                            <span>
+                              <%= article.id %>:&nbsp;
+                              <%= content_tag 'a', data: {bs_toggle: 'modal', bs_target: "#editArticleModal#{article.id}"} do %>
+                                <span style="color: rgba(var(--bs-link-color-rgb),var(--bs-link-opacity,1));"><%= article.title %></span>
+                              <% end %>
+                              <%= content_tag 'a', class: 'btn btn-primary btn-xs', data: {bs_toggle: 'modal', bs_target: "#editArticleModal#{article.id}"} do %>
+                                <svg class="bi bi-pencil-fill" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16">
+                                  <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"></path>
+                                </svg>
+                              <% end %>
+                            </span>
+                              <span class="fw-light">
+                                Created on <%= article.created_at.to_date %> by <%= get_name user: article.author %>
+                                <% if article.publish_by.present? %>
+                                  <%= article.published? ? " and published on #{article.publish_by.to_date}" : " and publishing by #{article.publish_by.to_date}" %>
+                                <% end %>
+                            </span>
+                          </div>
+                        </li>
+                      <% end %>
+                    </ul>
+                  <% else %>
+                    <p>There are no articles :(</p>
+                  <% end %>
+                </div>
+                <div id="published-articles" class="tab-pane" role="tabpanel">
+                  <% if @articles_published.present? %>
+                    <ul class="list-group">
+                      <% @articles_published.each do |article| %>
+                        <li class="list-group-item">
+                          <div class="vstack">
+                            <span>
+                              <%= article.id %>:&nbsp;
+                              <%= content_tag 'a', data: {bs_toggle: 'modal', bs_target: "#editArticleModal#{article.id}"} do %>
+                                <span style="color: rgba(var(--bs-link-color-rgb),var(--bs-link-opacity,1));"><%= article.title %></span>
+                              <% end %>
+                              <%= content_tag 'a', class: 'btn btn-primary btn-xs', data: {bs_toggle: 'modal', bs_target: "#editArticleModal#{article.id}"} do %>
+                                <svg class="bi bi-pencil-fill" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16">
+                                  <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"></path>
+                                </svg>
+                              <% end %>
+                            </span>
+                            <span class="fw-light">
+                              Created on <%= article.created_at.to_date %> by <%= get_name user: article.author %>
+                              <% if article.publish_by.present? %>
+                                  <%= article.published? ? " and published on #{article.publish_by.to_date}" : " and publishing by #{article.publish_by.to_date}" %>
+                              <% end %>
+                            </span>
+                          </div>
+                        </li>
+                      <% end %>
+                    </ul>
+                  <% else %>
+                    <span>There are no published articles :(</span>
+                  <% end %>
+                </div>
+                <div id="hidden-articles" class="tab-pane" role="tabpanel">
+                  <ul class="list-group">
+                    <% @articles_hidden.each do |article| %>
+                      <li class="list-group-item">
+                        <div class="vstack">
+                            <span>
+                              <%= article.id %>:&nbsp;
+                              <%= content_tag 'a', data: {bs_toggle: 'modal', bs_target: "#editArticleModal#{article.id}"} do %>
+                                <span style="color: rgba(var(--bs-link-color-rgb),var(--bs-link-opacity,1));"><%= article.title %></span>
+                              <% end %>
+                              <%= content_tag 'a', class: 'btn btn-primary btn-xs', data: {bs_toggle: 'modal', bs_target: "#editArticleModal#{article.id}"} do %>
+                                <svg class="bi bi-pencil-fill" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16">
+                                  <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"></path>
+                                </svg>
+                              <% end %>
+                            </span>
+                          <span class="fw-light">
+                              Created on <%= article.created_at.to_date %> by <%= get_name user: article.author %>
+                            <% if article.publish_by.present? %>
+                                  <%= article.published? ? " and published on #{article.publish_by.to_date}" : " and publishing by #{article.publish_by.to_date}" %>
+                              <% end %>
+                            </span>
+                        </div>
+                      </li>
+                    <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="tab-pane" role="tabpanel" id="categories">
+        <%= render_modal name: 'addCategory', title: 'Add a category' %>
+        <h5>
+          Categories:&nbsp;
+          <span class="float-end">
+            <button class="btn btn-success" data-bs-toggle="modal" data-bss-tooltip="" type="button" data-bs-target="#addCategoryModal" title="Add a new category">
+              <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16" class="bi bi-bookmark-plus-fill">
+                <path fill-rule="evenodd" d="M2 15.5V2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.74.439L8 13.069l-5.26 2.87A.5.5 0 0 1 2 15.5zm6.5-11a.5.5 0 0 0-1 0V6H6a.5.5 0 0 0 0 1h1.5v1.5a.5.5 0 0 0 1 0V7H10a.5.5 0 0 0 0-1H8.5V4.5z"></path>
+                </svg>
+            </button>
+          </span>
+        </h5>
+        <% if @categories.present? %>
+          <ul>
+            <% @categories.each do |category| %>
+              <li>
+                <%= render_modal name: "editCategory", title: "Edit category: #{category.name}", model: category %>
+                <%= category.name %>
+                &nbsp;
+                <strong>
+                  <%= content_tag 'a', class: 'btn btn-primary btn-xs', data: {bs_toggle: 'modal', bs_target: "#editCategoryModal#{category.id}"} do %>
+                    <svg class="bi bi-pencil-fill" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16">
+                      <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"></path>
+                    </svg>
+                  <% end %>
+                  &hairsp;
+                  <%= button_tag type: 'submit', name: 'admin_ops', value: AdminOps::DELETE_CATEGORY, form: "editCategoryForm#{category.id}", class: 'btn btn-danger btn-xs', onclick: "return confirm(\"Are you sure that you want to delete the '#{category.name}' category?\")" do %>
+                    <svg class="bi bi-trash-fill" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16">
+                      <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"></path>
+                    </svg>
+                  <% end %>
+                </strong>
+              </li>
+            <% end %>
+          </ul>
+        <% else %>
+          <span>There are no categories :(</span>
+        <% end %>
+
+      </div>
+      <div class="tab-pane" role="tabpanel" id="banlist">
+        <div class="modal fade" role="dialog" tabindex="-1" id="ban-user">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title">Ban a user</h4><button class="btn-close" type="button" aria-label="Close" data-bs-dismiss="modal"></button>
+              </div>
+              <div class="modal-body">
+                <form><label class="form-label">Enter the username here. This user must be registered and not be banned.</label>
+                  <div class="hstack"><input class="form-control" type="text" placeholder="Username" name="username"><button class="btn btn-danger" type="submit">Ban</button></div>
+                </form>
+                <div class="alert alert-success alert-dismissible" role="alert"><button class="btn-close" type="button" aria-label="Close" data-bs-dismiss="alert"></button><span><strong>Success!</strong>&nbsp;username has been banned.</span></div>
+                <div class="alert alert-danger alert-dismissible" role="alert"><button class="btn-close" type="button" aria-label="Close" data-bs-dismiss="alert"></button><span><strong>Fail!</strong>&nbsp;username cannot be found.</span></div>
+                <div class="alert alert-danger alert-dismissible" role="alert"><button class="btn-close" type="button" aria-label="Close" data-bs-dismiss="alert"></button><span><strong>Fail!</strong>&nbsp;username is already banned.</span></div>
+              </div>
+              <div class="modal-footer"><button class="btn btn-light" type="button" data-bs-dismiss="modal">Close</button></div>
+            </div>
+          </div>
+        </div>
+        <h5>Banned users:<span class="float-end"><button class="btn btn-danger" data-bs-toggle="modal" data-bss-tooltip="" type="button" data-bs-target="#ban-user" title="Ban a user"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16" class="bi bi-person-fill-add">
+                                                    <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm.5-5v1h1a.5.5 0 0 1 0 1h-1v1a.5.5 0 0 1-1 0v-1h-1a.5.5 0 0 1 0-1h1v-1a.5.5 0 0 1 1 0Zm-2-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"></path>
+                                                    <path d="M2 13c0 1 1 1 1 1h5.256A4.493 4.493 0 0 1 8 12.5a4.49 4.49 0 0 1 1.544-3.393C9.077 9.038 8.564 9 8 9c-5 0-6 3-6 4Z"></path>
+                                                </svg></button></span></h5>
+        <ul>
+          <li>user (Full Name)&nbsp;<strong data-bs-toggle="tooltip" data-bss-tooltip="" class="disabled" title="Cannot remove nor ban "><a href="unban">Unban</a></strong></li>
+          <li>user2&nbsp;<strong data-bs-toggle="tooltip" data-bss-tooltip="" class="disabled" title="Cannot remove nor ban "><a href="unban">Unban</a></strong></li>
+          <li>user4 (Full Name)&nbsp;<strong data-bs-toggle="tooltip" data-bss-tooltip="" class="disabled" title="Cannot remove nor ban "><a href="unban">Unban</a></strong></li>
+          <li>user0&nbsp;<strong data-bs-toggle="tooltip" data-bss-tooltip="" class="disabled" title="Cannot remove nor ban "><a href="unban">Unban</a></strong></li>
+        </ul>
+      </div>
+      <div class="tab-pane" role="tabpanel" id="admins">
+        <div class="modal fade" role="dialog" tabindex="-1" id="add-admin">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title">Add an administrator</h4><button class="btn-close" type="button" aria-label="Close" data-bs-dismiss="modal"></button>
+              </div>
+              <div class="modal-body">
+                <form><label class="form-label">Enter the username here. This user must be registered and not be banned.</label>
+                  <div class="hstack"><input class="form-control" type="text" placeholder="Username"><button class="btn btn-primary" type="submit">Add</button></div>
+                </form>
+                <div class="alert alert-success alert-dismissible" role="alert"><button class="btn-close" type="button" aria-label="Close" data-bs-dismiss="alert"></button><span><strong>Success!</strong>&nbsp;username has successfully been added.</span></div>
+                <div class="alert alert-danger alert-dismissible" role="alert"><button class="btn-close" type="button" aria-label="Close" data-bs-dismiss="alert"></button><span><strong>Fail!</strong>&nbsp;username cannot be found.</span></div>
+                <div class="alert alert-danger alert-dismissible" role="alert"><button class="btn-close" type="button" aria-label="Close" data-bs-dismiss="alert"></button><span><strong>Fail!</strong>&nbsp;username is already an administrator.</span></div>
+                <div class="alert alert-danger alert-dismissible" role="alert"><button class="btn-close" type="button" aria-label="Close" data-bs-dismiss="alert"></button><span><strong>Fail!</strong>&nbsp;username is banned and cannot be made an administrator.</span></div>
+              </div>
+              <div class="modal-footer"><button class="btn btn-light" type="button" data-bs-dismiss="modal">Close</button></div>
+            </div>
+          </div>
+        </div>
+        <h5>Current administrators:<span class="float-end"><button class="btn btn-success" data-bs-toggle="modal" data-bss-tooltip="" type="button" data-bs-target="#add-admin" title="Add an administrator"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16" class="bi bi-person-fill-add">
+                                                    <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm.5-5v1h1a.5.5 0 0 1 0 1h-1v1a.5.5 0 0 1-1 0v-1h-1a.5.5 0 0 1 0-1h1v-1a.5.5 0 0 1 1 0Zm-2-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"></path>
+                                                    <path d="M2 13c0 1 1 1 1 1h5.256A4.493 4.493 0 0 1 8 12.5a4.49 4.49 0 0 1 1.544-3.393C9.077 9.038 8.564 9 8 9c-5 0-6 3-6 4Z"></path>
+                                                </svg></button></span></h5>
+        <ul>
+          <li>admin (Administrator)&nbsp;<strong data-bs-toggle="tooltip" data-bss-tooltip="" class="disabled" title="Cannot remove nor ban "><a href="remove">Remove</a> | <a href="ban_user">Ban</a></strong></li>
+          <li>max&nbsp;<strong><a href="remove">Remove</a> | <a href="ban_user">Ban</a></strong></li>
+          <li>admin (Administrator)&nbsp;<strong><a href="remove">Remove</a> | <a href="ban_user">Ban</a></strong></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

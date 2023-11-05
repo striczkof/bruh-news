@@ -1,0 +1,15 @@
+<% if @current_user %>
+  <div class="row">
+    <h5>Bye <%= get_name %>!</h5>
+  </div>
+  <div class="row">
+    <p class="text-center">You should be back to wherever you came from. If you are still here after <strong id="redirect-time"><%= @redirect_time %></strong> seconds,&nbsp;<a href="#">click me!</a></p>
+  </div>
+<% else %>
+  <div class="row">
+    <h5>Who are you?</h5>
+  </div>
+  <div class="row">
+    <p class="text-center">Go away! You are not even logged in! If you are still here after <strong id="redirect-time"><%= @redirect_time %></strong> seconds,&nbsp;<a href="#">click me!</a></p>
+  </div>
+<% end %>

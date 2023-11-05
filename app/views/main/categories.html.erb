@@ -1,0 +1,22 @@
+<% @heading = 'All Categories' %>
+<% if @categories.present? %>
+  <ul class="list-group">
+    <% @categories.each do |category| %>
+      <li class="list-group-item">
+        <h5><a class="link-body-emphasis" href="#"><span style="color: rgb(33, 37, 41);"><%= category.name %></span></a></h5>
+        <% if category.articles.present? %>
+          <h6>Last articles:</h6>
+          <ul>
+            <% category.articles.last(5).each do |article| %>
+              <li><%= article.publish_by.present? ? article.publish_by.to_date : 'Unpublished' %>: <%= article.title %></li>
+            <% end %>
+          </ul>
+        <% else %>
+          <p>No articles in this category yet :(</p>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>No categories present yet :(</p>
+<% end %>

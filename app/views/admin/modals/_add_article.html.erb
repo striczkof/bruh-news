@@ -1,0 +1,42 @@
+<% content_for :modal_body, flush: true do %>
+  <%= form_with scope: :article, method: :post, url: admin_path, id: form_id do |form| %>
+    <%= form.hidden_field :author_id, value: @current_user.id %>
+
+    <%= form.label :title, 'Title', class: 'form-label' %>
+    <%= form.text_field :title, required: true, placeholder: 'Title', class: 'form-control' %>
+
+    <%= form.label :category_ids, 'Categories', class: 'form-label' %>
+    <%= form.collection_select :category_ids, @categories, :id, :name, {}, {multiple: true, class: 'form-select', title: 'Select multiple categories by holding down the Ctrl (Command on macOS) key then click on the items.', data: {bs_toggle: 'tooltip'}} %>
+
+    <%= form.label :content, 'Content', class: 'form-label' %>
+    <%= form.text_area :content, required: true, spellcheck: true, rows: 15, class: 'form-control' %>
+
+    <%= tag.div class: 'form-check' do %>
+      <%= form.check_box :comments_enabled, class: 'form-check-input', checked: true %>
+      <%= form.label :comments_enabled, 'Enable comments', class: 'form-check-label' %>
+    <% end %>
+  <% end %>
+<% end %>
+<% content_for :modal_footer, flush: true do %>
+  <div class="input-group">
+    <%= datetime_local_field_tag 'article[publish_by]', '', scope: :article, form: form_id, class: 'form-control', title: 'When this publish date is greater than the current time, the article will be visible.', data: {bs_toggle: 'tooltip'} %>
+    <%= button_tag type: 'reset', form: form_id, class: 'btn btn-danger', onclick: "return confirm(\"Proceeding will clear your progress!\")", data: {bs_dismiss: 'modal'} do %>
+      <svg class="bi bi-trash-fill" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16">
+        <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"></path>
+      </svg>
+    <% end %>
+    <%= button_tag type: 'reset', form: form_id, class: 'btn btn-danger', onclick: "return confirm(\"Proceeding will clear your progress!\")", data: {bs_dismiss: 'modal'} do %>
+      <svg class="bi bi-trash-fill" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16">
+        <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"></path>
+      </svg>
+    <% end %>
+    <%= button_tag type: 'submit', name: 'admin_ops', value: AdminOps::CREATE_ARTICLE, form: form_id, class: 'btn btn-primary' do %>
+      <svg class="bi bi-save2-fill" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16">
+        <path d="M8.5 1.5A1.5 1.5 0 0 1 10 0h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h6c-.314.418-.5.937-.5 1.5v6h-2a.5.5 0 0 0-.354.854l2.5 2.5a.5.5 0 0 0 .708 0l2.5-2.5A.5.5 0 0 0 10.5 7.5h-2v-6z"></path>
+      </svg>
+    <% end %>
+    <%= button_tag type: 'submit', name: 'admin_ops', value: AdminOps::PUBLISH_ARTICLE, form: form_id, class: 'btn btn-success' do %>
+      Publish Now
+    <% end %>
+  </div>
+<% end %>

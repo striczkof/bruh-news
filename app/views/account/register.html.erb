@@ -1,0 +1,25 @@
+<div class="bs-icon-xl bs-icon-circle bs-icon-primary d-xl-flex align-self-center bs-icon my-4">
+  <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16" class="bi bi-person-plus">
+    <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H1s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C9.516 10.68 8.289 10 6 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"></path>
+    <path fill-rule="evenodd" d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z"></path>
+  </svg>
+</div>
+<%= form_with scope: :user, method: :post, controller_name: 'account', action_name: 'register', class: 'text-center', disabled: form_disabled? do |form| %>
+  <div class="mb-3">
+    <%= form.text_field :username, required: true, must_pattern_match: /[a-zA-Z0-9._-]/, class: "form-control #{input_disabled_class}", disabled: form_disabled?, placeholder: 'Username' %>
+  </div>
+  <div class="vstack mb-3">
+    <%= form.text_field :fullname, required: false, must_pattern_match: /[a-zA-Z0-9._-]/, class: "form-control #{input_disabled_class}", disabled: form_disabled?, placeholder: 'Full name (optional)' %>
+    <%= form.email_field :email, required: false, must_pattern_match: /^[^,;:\/\[\]]+@[^,;:\/\[\]]+$/, class: "form-control #{input_disabled_class}", disabled: form_disabled?, placeholder: 'Email (optional)' %>
+  </div>
+  <div class="hstack mb-3">
+    <%= form.password_field :password, required: true, class: "form-control #{input_disabled_class}", disabled: form_disabled?, placeholder: 'Password' %>
+    <%= form.password_field :confirm_password, required: true, class: "form-control #{input_disabled_class}", disabled: form_disabled?, placeholder: 'Confirm' %>
+  </div>
+  <div class="mb-3">
+    <%= form.submit 'Register', class: "btn btn-primary d-block w-100 #{input_disabled_class}", disabled: form_disabled? %>
+  </div>
+<% end %>
+<div class="text-center mb-3">
+  <%= link_to 'Login', login_path, class: 'link-secondary' %> | <%= link_to 'Go back', @redirect_path, class: 'link-secondary' %>
+</div>

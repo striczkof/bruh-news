@@ -1,0 +1,22 @@
+<% content_for :page_body do %>
+  <%= render partial: "layouts/main/navbar" %>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8">
+        <div class="card">
+          <% if @heading.present? %>
+            <div class="card-header">
+              <h4 class="mb-0"><%= @heading %></h4>
+            </div>
+          <% end %>
+          <div class="card-body">
+            <%= yield %>
+          </div>
+        </div>
+      </div>
+      <%= render partial: "layouts/main/sidebar" %>
+    </div>
+  </div>
+  <%= render partial: "layouts/main/footer" %>
+<% end %>
+<%= render template: "layouts/application" %>
